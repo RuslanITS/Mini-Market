@@ -1,5 +1,8 @@
-import { useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent, type SyntheticEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button, Form } from "react-bootstrap";
+import { toast } from "react-toastify";
+import axiosApi from "../../api/fairbase";
 import { categories } from "../../constans.ts";
 
 interface ProductForm {
@@ -11,6 +14,8 @@ interface ProductForm {
 }
 
 const AddProduct = () => {
+  const navigate = useNavigate();
+
   const [state, setState] = useState<ProductForm>({
     type: "",
     title: "",
@@ -30,8 +35,31 @@ const AddProduct = () => {
     }));
   };
 
+  const submitHandler = async (e: SyntheticEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    if (
+      !state.type.trim() ||
+      !state.title.trim() ||
+      !state.price.trim()
+    ) {
+      toast.error("Please fill required fields!");
+      return;
+    }
+
+    try {
+      await axiosApi.post("/products.json", state);
+
+      toast.success("Product created!");
+
+      navigate("/");
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed create product!");
+    }
+  };
   return (
-    <Form>
+    <Form onSubmit={submitHandler}>
       <h2 className="mb-4">Add New Product</h2>
 
       <Form.Group className="mb-3">
@@ -63,6 +91,7 @@ const AddProduct = () => {
           name="title"
           value={state.title}
           onChange={changeHandler}
+          placeholder="Enter product title"
         />
       </Form.Group>
 
@@ -75,6 +104,7 @@ const AddProduct = () => {
           name="description"
           value={state.description}
           onChange={changeHandler}
+          placeholder="Enter description"
         />
       </Form.Group>
 
@@ -86,6 +116,7 @@ const AddProduct = () => {
           name="picture"
           value={state.picture}
           onChange={changeHandler}
+          placeholder="Enter image URL"
         />
       </Form.Group>
 
@@ -97,12 +128,11 @@ const AddProduct = () => {
           name="price"
           value={state.price}
           onChange={changeHandler}
+          placeholder="Enter price"
         />
       </Form.Group>
 
-      <Button type="button">
-        Create Product
-      </Button>
+      <Button type="submit">Create Product</Button>
     </Form>
   );
 };
