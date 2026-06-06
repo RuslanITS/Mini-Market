@@ -21,7 +21,7 @@ const Products = () => {
         let url = "/products.json";
 
         if (type) {
-          url = `/products.json?orderBy="type"&equalTo="${type}"`;
+          url = `/products.json?orderBy="type"&equalTo="${type}"`
         }
 
         const response = await axiosApi.get<FirebaseProducts | null>(url);
@@ -64,9 +64,10 @@ const Products = () => {
       setProducts(prev =>
         prev.filter(product => product.id !== id)
       );
+      toast.success("Product deleted!");
     } catch (e) {
       console.error(e);
-      toast.error('Error')
+      toast.error('Error deleted')
     }
   };
 

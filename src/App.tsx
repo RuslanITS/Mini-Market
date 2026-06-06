@@ -1,6 +1,7 @@
 import './App.css';
 import { Routes, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
+import Footer from "./components/Footer/Footer.tsx";
 import Edit from "./containers/Edit/Edit.tsx";
 import Home from "./containers/Home/Home.tsx";
 import Header from "./components/Header/Header";
@@ -23,6 +24,7 @@ const App = () => (
         </Routes>
       </Container>
     </main>
+    <Footer />
   </div>
 );
 

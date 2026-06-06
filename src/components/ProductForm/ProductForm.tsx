@@ -60,7 +60,11 @@ const ProductForm = ({state, onSubmit, onChange, isEdit = false,}: ProductFormPr
           name="title"
           value={state.title}
           onChange={onChange}
+          maxLength={30}
         />
+        <Form.Text className="text-muted">
+          {state.title.length}/30
+        </Form.Text>
       </Form.Group>
 
       <Form.Group className="mb-3">
@@ -72,7 +76,11 @@ const ProductForm = ({state, onSubmit, onChange, isEdit = false,}: ProductFormPr
           name="description"
           value={state.description}
           onChange={onChange}
+          maxLength={200}
         />
+        <Form.Text className="text-muted">
+          {state.description.length}/200
+        </Form.Text>
       </Form.Group>
 
       <Form.Group className="mb-3">
