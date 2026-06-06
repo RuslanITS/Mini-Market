@@ -3,37 +3,39 @@ import { Col, Row } from "react-bootstrap";
 import ProductCard from "../Products/ProductCard/ProductCard.tsx";
 import axiosApi from "../../api/fairbase";
 import type { FirebaseProducts, Product } from "../../type";
+import { useParams } from "react-router-dom";
 
 const Products = () => {
   const [products, setProducts] = useState<Product[]>([]);
-
-  const fetchProducts = async () => {
-    const response = await axiosApi.get<FirebaseProducts | null>(
-      "/products.json"
-    );
-
-    const productsData = response.data;
-
-    if (!productsData) {
-      setProducts([]);
-      return;
-    }
-
-    const productsArray = Object.keys(productsData).map(id => ({
-      id,
-      ...productsData[id],
-    }));
-
-    setProducts(productsArray);
-  };
+  const { type } = useParams();
 
   useEffect(() => {
-    const loadProducts = async () => {
-      await fetchProducts();
+    const fetchData = async () => {
+      let url = "/products.json";
+
+      if (type) {
+        url = `/products.json?orderBy="type"&equalTo="${type}"`;
+      }
+
+      const response = await axiosApi.get<FirebaseProducts | null>(url);
+
+      const productsData = response.data;
+
+      if (!productsData) {
+        setProducts([]);
+        return;
+      }
+
+      const productsArray = Object.keys(productsData).map(id => ({
+        id,
+        ...productsData[id],
+      }));
+
+      setProducts(productsArray);
     };
 
-    void loadProducts();
-  }, []);
+    void fetchData();
+  }, [type]);
 
   return (
     <>

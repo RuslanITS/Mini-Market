@@ -13,6 +13,7 @@ const App = () => (
       <Container className="py-4">
         <Routes>
           <Route path="/" element={<Home />} />
+          <Route path="/:type" element={<Home />} />
           <Route path="/add" element={<Add />} />
         </Routes>
       </Container>
