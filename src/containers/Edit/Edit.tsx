@@ -1,5 +1,5 @@
-import { useState, type ChangeEvent, type SyntheticEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState, type ChangeEvent, type SyntheticEvent } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import axiosApi from "../../api/fairbase";
 import ProductForm from "../../components/ProductForm/ProductForm";
@@ -12,7 +12,8 @@ interface ProductFormState {
   picture: string;
 }
 
-const AddProduct = () => {
+const Edit = () => {
+  const { id } = useParams();
   const navigate = useNavigate();
 
   const [state, setState] = useState<ProductFormState>({
@@ -22,6 +23,26 @@ const AddProduct = () => {
     price: "",
     picture: "",
   });
+
+  useEffect(() => {
+    const fetchProduct = async () => {
+      try {
+        const response = await axiosApi.get(`/products/${id}.json`);
+
+        setState({
+          type: response.data.type,
+          title: response.data.title,
+          description: response.data.description,
+          price: response.data.price,
+          picture: response.data.picture,
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    };
+
+    void fetchProduct();
+  }, [id]);
 
   const changeHandler = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -37,23 +58,17 @@ const AddProduct = () => {
   const submitHandler = async (e: SyntheticEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (
-      !state.type.trim() ||
-      !state.title.trim() ||
-      !state.price.trim()
-    ) {
-      toast.error("Please fill required fields!");
-      return;
-    }
-
     try {
-      await axiosApi.post("/products.json", state);
+      await axiosApi.patch(
+        `/products/${id}.json`,
+        state
+      );
 
-      toast.success("Product created!");
+      toast.success("Product updated!");
       navigate("/");
     } catch (e) {
       console.error(e);
-      toast.error("Failed create product!");
+      toast.error("Failed to update product!");
     }
   };
 
@@ -62,8 +77,9 @@ const AddProduct = () => {
       state={state}
       onChange={changeHandler}
       onSubmit={submitHandler}
+      isEdit
     />
   );
 };
 
-export default AddProduct;
+export default Edit;

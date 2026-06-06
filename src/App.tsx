@@ -1,6 +1,7 @@
 import './App.css';
 import { Routes, Route } from "react-router-dom";
 import { Container } from "react-bootstrap";
+import Edit from "./containers/Edit/Edit.tsx";
 import Home from "./containers/Home/Home.tsx";
 import Header from "./components/Header/Header";
 import Add from "./containers/AddProduct/AddProduct.tsx";
@@ -15,6 +16,10 @@ const App = () => (
           <Route path="/" element={<Home />} />
           <Route path="/:type" element={<Home />} />
           <Route path="/add" element={<Add />} />
+          <Route
+            path="/products/:id/edit"
+            element={<Edit />}
+          />
         </Routes>
       </Container>
     </main>

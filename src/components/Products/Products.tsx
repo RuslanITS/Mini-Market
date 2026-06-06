@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Col, Row, Spinner } from "react-bootstrap";
-import { useParams } from "react-router-dom";
+import { NavLink, useParams } from "react-router-dom";
+import { toast } from "react-toastify";
 import axiosApi from "../../api/fairbase";
+import { categories } from "../../constans";
 import type { FirebaseProducts, Product } from "../../type";
 import ProductCard from "../Products/ProductCard/ProductCard.tsx";
 
@@ -37,8 +39,8 @@ const Products = () => {
         }));
 
         setProducts(productsArray);
-      } catch (e) {
-        console.error(e);
+      } catch{
+        toast.error('error');
       } finally {
         setLoading(false);
       }
@@ -55,9 +57,41 @@ const Products = () => {
     );
   }
 
+  const deleteProduct = async (id: string) => {
+    try {
+      await axiosApi.delete(`/products/${id}.json`);
+
+      setProducts(prev =>
+        prev.filter(product => product.id !== id)
+      );
+    } catch (e) {
+      console.error(e);
+      toast.error('Error')
+    }
+  };
+
+  if (!loading && products.length === 0) {
+    return (
+      <div className="text-center mt-5">
+        <h3>No products found</h3>
+
+        <NavLink
+          to="/add"
+          className="btn btn-primary"
+        >
+          Add Product
+        </NavLink>
+      </div>
+    );
+  }
+
   return (
     <>
-      <h2>Products</h2>
+      <h2 className="mb-4">
+        {type
+          ? categories.find(category => category.id === type)?.title
+          : "All Products"}
+      </h2>
 
       <Row>
         {products.map(product => (
@@ -66,7 +100,10 @@ const Products = () => {
             md={4}
             className="mb-3"
           >
-            <ProductCard product={product} />
+            <ProductCard
+              product={product}
+              onDelete={deleteProduct}
+            />
           </Col>
         ))}
       </Row>
