@@ -10,7 +10,7 @@ const ProductCard = ({ product }: Props) => {
     <Card>
       <Card.Img
         variant="top"
-        src={product.picture || "https://placehold.co/300x200"}
+        src={product.picture || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTrv5VZcp2z8nhbx19FPGD60aKLVEgET4VELA&s"}
       />
 
       <Card.Body>
